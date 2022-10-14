@@ -3,7 +3,7 @@ package levels
 import (
 	"github.com/veandco/go-sdl2/sdl"
 	"log"
-	"manveer/exp/shooter_components"
+	"manveer/exp/components/shooter"
 	"time"
 )
 
@@ -37,7 +37,7 @@ func (lv Level) Start() {
 			}
 		}
 		lv.onFrameChange(lv.renderer)
-		shooter_components.Delta = time.Since(frameStartTime).Seconds() * shooter_components.Configs.TargetTicksPerSecond
+		shooter.Delta = time.Since(frameStartTime).Seconds() * shooter.Configs.TargetTicksPerSecond
 	}
 
 }

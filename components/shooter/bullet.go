@@ -1,4 +1,4 @@
-package components
+package shooter
 
 import (
 	"github.com/veandco/go-sdl2/sdl"

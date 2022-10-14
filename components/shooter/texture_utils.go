@@ -1,4 +1,4 @@
-package components
+package shooter
 
 import (
 	"github.com/veandco/go-sdl2/sdl"
@@ -7,6 +7,8 @@ import (
 
 func drawTexture(texture *sdl.Texture, position Vector, rotation float64, drawWidth float64, drawHeight float64, renderer *sdl.Renderer) error {
 	_, _, width, height, err := texture.Query()
+	//Converting actor coordinates to top left of sprite
+
 	x := position.X - drawWidth/2.0
 	y := position.Y - drawHeight/2.0
 

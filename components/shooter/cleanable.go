@@ -1,4 +1,4 @@
-package components
+package shooter
 
 type Cleanable interface {
 	Clean()

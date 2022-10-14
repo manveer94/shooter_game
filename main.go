@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/veandco/go-sdl2/sdl"
 	"log"
+	"manveer/exp/components/shooter"
 	"manveer/exp/levels"
-	"manveer/exp/shooter_components"
 )
 
 var window *sdl.Window
@@ -28,11 +28,11 @@ func main() {
 		}
 	}(renderer)
 
-	//shooterLevel := levels.CreateShooterLevel(renderer, window)
-	//shooterLevel.Start()
+	shooterLevel := levels.CreateShooterLevel(renderer, window)
+	shooterLevel.Start()
 
-	gameOfLife := levels.CreateGameOfLife(renderer, window)
-	gameOfLife.Start()
+	//gameOfLife := levels.CreateGameOfLife(renderer, window)
+	//gameOfLife.Start()
 
 }
 
@@ -47,7 +47,7 @@ func initWindow() {
 	window, err = sdl.CreateWindow(
 		"Gaming in go",
 		sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
-		int32(shooter_components.Configs.ScreenWidth), int32(shooter_components.Configs.ScreenHeight),
+		int32(shooter.Configs.ScreenWidth), int32(shooter.Configs.ScreenHeight),
 		sdl.WINDOW_OPENGL)
 
 	if err != nil {

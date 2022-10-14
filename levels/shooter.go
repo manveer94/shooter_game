@@ -3,7 +3,7 @@ package levels
 import (
 	"github.com/veandco/go-sdl2/sdl"
 	"log"
-	"manveer/exp/shooter_components"
+	shooter_components2 "manveer/exp/components/shooter"
 )
 
 func CreateShooterLevel(renderer *sdl.Renderer, window *sdl.Window) *Level {
@@ -13,16 +13,16 @@ func CreateShooterLevel(renderer *sdl.Renderer, window *sdl.Window) *Level {
 		renderer: renderer,
 		window:   window,
 		onStart: func(renderer *sdl.Renderer) {
-			shooter_components.Actors = append(shooter_components.Actors, shooter_components.NewPlayer(renderer))
+			shooter_components2.Actors = append(shooter_components2.Actors, shooter_components2.NewPlayer(renderer))
 			createEnemies(renderer)
-			shooter_components.InitBulletPool(renderer)
+			shooter_components2.InitBulletPool(renderer)
 		},
 		onFrameChange: func(renderer *sdl.Renderer) {
 			var err error
 			renderer.SetDrawColor(255, 255, 255, 255)
 			renderer.Clear()
 
-			for _, actor := range shooter_components.Actors {
+			for _, actor := range shooter_components2.Actors {
 				if actor.Active {
 					err = actor.Update()
 					if err != nil {
@@ -35,7 +35,7 @@ func CreateShooterLevel(renderer *sdl.Renderer, window *sdl.Window) *Level {
 				}
 
 			}
-			if err := shooter_components.CheckCollisions(); err != nil {
+			if err := shooter_components2.CheckCollisions(); err != nil {
 				log.Fatalf("checking collisions:%v \n", err)
 			}
 			renderer.Present()
@@ -49,19 +49,19 @@ func createEnemies(renderer *sdl.Renderer) {
 	xMargin := 70.0
 	yMargin := 50.0
 
-	y := 10.0 + shooter_components.Configs.BasicEnemySize/2
+	y := 10.0 + shooter_components2.Configs.BasicEnemySize/2
 	for i := 0; i < 4; i++ {
-		x := 45.0 + shooter_components.Configs.BasicEnemySize/2
+		x := 45.0 + shooter_components2.Configs.BasicEnemySize/2
 		for j := 0; j < 5; j++ {
-			enemy := shooter_components.NewBasicEnemy(renderer, shooter_components.Vector{
+			enemy := shooter_components2.NewBasicEnemy(renderer, shooter_components2.Vector{
 				X: x,
 				Y: y,
 			})
-			x = x + shooter_components.Configs.BasicEnemySize + xMargin
+			x = x + shooter_components2.Configs.BasicEnemySize + xMargin
 			enemy.Active = true
-			shooter_components.Actors = append(shooter_components.Actors, enemy)
+			shooter_components2.Actors = append(shooter_components2.Actors, enemy)
 		}
-		y = y + shooter_components.Configs.BasicEnemySize + yMargin
+		y = y + shooter_components2.Configs.BasicEnemySize + yMargin
 	}
 
 }
