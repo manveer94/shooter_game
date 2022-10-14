@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/veandco/go-sdl2/sdl"
 	"log"
-	"manveer/exp/components"
-	"time"
+	"manveer/exp/levels"
+	"manveer/exp/shooter_components"
 )
 
 var window *sdl.Window
@@ -28,7 +28,12 @@ func main() {
 		}
 	}(renderer)
 
-	initEventLoop()
+	//shooterLevel := levels.CreateShooterLevel(renderer, window)
+	//shooterLevel.Start()
+
+	gameOfLife := levels.CreateGameOfLife(renderer, window)
+	gameOfLife.Start()
+
 }
 
 func initWindow() {
@@ -42,7 +47,7 @@ func initWindow() {
 	window, err = sdl.CreateWindow(
 		"Gaming in go",
 		sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
-		int32(components.Configs.ScreenWidth), int32(components.Configs.ScreenHeight),
+		int32(shooter_components.Configs.ScreenWidth), int32(shooter_components.Configs.ScreenHeight),
 		sdl.WINDOW_OPENGL)
 
 	if err != nil {
@@ -56,68 +61,7 @@ func initRenderer() {
 	renderer, err = sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED)
 	log.Println("initializing renderer")
 	if err != nil {
-		log.Fatalln("error while initializing the rederer")
-	}
-
-}
-
-func initEventLoop() {
-	var err error
-	components.Actors = append(components.Actors, components.NewPlayer(renderer))
-	createEnemies()
-	components.InitBulletPool(renderer)
-
-	for {
-		frameStartTime := time.Now()
-		for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
-			switch event.(type) {
-			case *sdl.QuitEvent:
-				log.Println("quit event received")
-				return
-			}
-		}
-		renderer.SetDrawColor(255, 255, 255, 255)
-		renderer.Clear()
-
-		for _, actor := range components.Actors {
-			if actor.Active {
-				err = actor.Update()
-				if err != nil {
-					log.Fatalf("updating actor: %v", err)
-				}
-				err = actor.Draw(renderer)
-				if err != nil {
-					log.Fatalf("drawing actor: %v", err)
-				}
-			}
-
-		}
-		if err := components.CheckCollisions(); err != nil {
-			log.Fatalf("checking collisions:%v \n", err)
-		}
-		renderer.Present()
-		components.Delta = time.Since(frameStartTime).Seconds() * components.Configs.TargetTicksPerSecond
-	}
-}
-
-func createEnemies() {
-	log.Println("Creating enemies")
-	xMargin := 70.0
-	yMargin := 50.0
-
-	y := 10.0 + components.Configs.BasicEnemySize/2
-	for i := 0; i < 4; i++ {
-		x := 45.0 + components.Configs.BasicEnemySize/2
-		for j := 0; j < 5; j++ {
-			enemy := components.NewBasicEnemy(renderer, components.Vector{
-				X: x,
-				Y: y,
-			})
-			x = x + components.Configs.BasicEnemySize + xMargin
-			enemy.Active = true
-			components.Actors = append(components.Actors, enemy)
-		}
-		y = y + components.Configs.BasicEnemySize + yMargin
+		log.Fatalln("error while initializing the renderer")
 	}
 
 }
