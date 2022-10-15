@@ -1,4 +1,4 @@
-package shooter
+package common
 
 import (
 	"fmt"
@@ -11,25 +11,25 @@ type Vector struct {
 }
 
 type Component interface {
-	onUpdate() error
-	onDraw(renderer *sdl.Renderer) error
-	onCollision(other *Actor) error
+	OnUpdate() error
+	OnDraw(renderer *sdl.Renderer) error
+	OnCollision(other *Actor) error
 }
 
 type Actor struct {
-	position   Vector
-	angle      float64
+	Position   Vector
+	Angle      float64
 	Active     bool
 	components []Component
-	collisions []circle
-	tag        string
-	drawWidth  float64
-	drawHeight float64
+	Collisions []Circle
+	Tag        string
+	DrawWidth  float64
+	DrawHeight float64
 }
 
 func (a *Actor) Draw(renderer *sdl.Renderer) error {
 	for _, comp := range a.components {
-		err := comp.onDraw(renderer)
+		err := comp.OnDraw(renderer)
 		if err != nil {
 			return err
 		}
@@ -39,7 +39,7 @@ func (a *Actor) Draw(renderer *sdl.Renderer) error {
 
 func (a *Actor) Update() error {
 	for _, comp := range a.components {
-		err := comp.onUpdate()
+		err := comp.OnUpdate()
 		if err != nil {
 			return err
 		}
@@ -49,7 +49,7 @@ func (a *Actor) Update() error {
 
 func (a Actor) Collision(other *Actor) error {
 	for _, comp := range a.components {
-		err := comp.onCollision(other)
+		err := comp.OnCollision(other)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ func (a Actor) Collision(other *Actor) error {
 	return nil
 }
 
-func (a *Actor) addComponent(new Component) {
+func (a *Actor) AddComponent(new Component) {
 	for _, existing := range a.components {
 		if reflect.TypeOf(new) == reflect.TypeOf(existing) {
 			panic(fmt.Sprintf(
@@ -68,7 +68,7 @@ func (a *Actor) addComponent(new Component) {
 	a.components = append(a.components, new)
 }
 
-func (a *Actor) getComponent(withType Component) Component {
+func (a *Actor) GetComponent(withType Component) Component {
 	typ := reflect.TypeOf(withType)
 	for _, comp := range a.components {
 		if reflect.TypeOf(comp) == typ {

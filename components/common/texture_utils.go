@@ -1,11 +1,11 @@
-package shooter
+package common
 
 import (
 	"github.com/veandco/go-sdl2/sdl"
 	"log"
 )
 
-func drawTexture(texture *sdl.Texture, position Vector, rotation float64, drawWidth float64, drawHeight float64, renderer *sdl.Renderer) error {
+func DrawTexture(texture *sdl.Texture, position Vector, rotation float64, drawWidth float64, drawHeight float64, renderer *sdl.Renderer) error {
 	_, _, width, height, err := texture.Query()
 	//Converting actor coordinates to top left of sprite
 
@@ -23,7 +23,7 @@ func drawTexture(texture *sdl.Texture, position Vector, rotation float64, drawWi
 	return err
 }
 
-func loadTextureFromBMP(renderer *sdl.Renderer, filename string) (*sdl.Texture, error) {
+func LoadTextureFromBMP(renderer *sdl.Renderer, filename string) (*sdl.Texture, error) {
 	surface, err := sdl.LoadBMP(filename)
 	if err != nil {
 		log.Printf("not able to load actor sprite from path %s: %v\n", filename, err)

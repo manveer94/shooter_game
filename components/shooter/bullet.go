@@ -2,43 +2,44 @@ package shooter
 
 import (
 	"github.com/veandco/go-sdl2/sdl"
+	"manveer/exp/components/common"
 	"math"
 )
 
 type Bullet struct {
-	Actor
+	common.Actor
 }
 
 var bulletCount = 0
 
-func NewBullet(renderer *sdl.Renderer) *Actor {
-	b := &Actor{}
-	b.drawWidth = Configs.BulletWidth
-	b.drawHeight = Configs.BulletHeight
-	sr := newSpriteRenderer(b, renderer, "sprites/player_bullet.bmp")
-	b.addComponent(sr)
-	b.addComponent(newBulletTrajectory(b, Configs.BulletSpeed))
+func NewBullet(renderer *sdl.Renderer) *common.Actor {
+	b := &common.Actor{}
+	b.DrawWidth = Configs.BulletWidth
+	b.DrawHeight = Configs.BulletHeight
+	sr := common.NewSpriteRenderer(b, renderer, "sprites/player_bullet.bmp")
+	b.AddComponent(sr)
+	b.AddComponent(newBulletTrajectory(b, Configs.BulletSpeed))
 	b.Active = false
-	b.tag = "bullet"
-	col := circle{
-		center: b.position,
-		radius: Configs.BulletWidth,
+	b.Tag = "bullet"
+	col := common.Circle{
+		Center: b.Position,
+		Radius: Configs.BulletWidth,
 	}
-	b.collisions = append(b.collisions, col)
+	b.Collisions = append(b.Collisions, col)
 	return b
 }
 
-var BulletPool []*Actor
+var BulletPool []*common.Actor
 
 func InitBulletPool(renderer *sdl.Renderer) {
 	for i := 0; i < 30; i++ {
 		bullet := NewBullet(renderer)
 		BulletPool = append(BulletPool, bullet)
-		Actors = append(Actors, bullet)
+		common.Actors = append(common.Actors, bullet)
 	}
 }
 
-func bulletFromPool() (*Actor, bool) {
+func bulletFromPool() (*common.Actor, bool) {
 	for _, bul := range BulletPool {
 		if !bul.Active {
 			return bul, true
@@ -48,34 +49,34 @@ func bulletFromPool() (*Actor, bool) {
 }
 
 type bulletTrajectory struct {
-	container *Actor
+	container *common.Actor
 	speed     float64
 }
 
-func newBulletTrajectory(container *Actor, speed float64) *bulletTrajectory {
+func newBulletTrajectory(container *common.Actor, speed float64) *bulletTrajectory {
 	return &bulletTrajectory{
 		container: container,
 		speed:     speed,
 	}
 }
 
-func (b *bulletTrajectory) onUpdate() error {
+func (b *bulletTrajectory) OnUpdate() error {
 	container := b.container
-	container.position.Y -= Configs.BulletSpeed * math.Cos(container.angle*(math.Pi/180)) * Delta
-	container.position.X += Configs.BulletSpeed * math.Sin(container.angle*(math.Pi/180)) * Delta
-	if container.position.Y < 0 {
+	container.Position.Y -= Configs.BulletSpeed * math.Cos(container.Angle*(math.Pi/180)) * common.Delta
+	container.Position.X += Configs.BulletSpeed * math.Sin(container.Angle*(math.Pi/180)) * common.Delta
+	if container.Position.Y < 0 {
 		container.Active = false
 	}
-	b.container.collisions[0].center = container.position
+	b.container.Collisions[0].Center = container.Position
 
 	return nil
 }
 
-func (b *bulletTrajectory) onDraw(renderer *sdl.Renderer) error {
+func (b *bulletTrajectory) OnDraw(renderer *sdl.Renderer) error {
 	return nil
 }
 
-func (b *bulletTrajectory) onCollision(other *Actor) error {
+func (b *bulletTrajectory) OnCollision(other *common.Actor) error {
 	b.container.Active = false
 	return nil
 }

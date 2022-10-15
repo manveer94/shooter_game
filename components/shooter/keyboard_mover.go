@@ -1,50 +1,53 @@
 package shooter
 
-import "github.com/veandco/go-sdl2/sdl"
+import (
+	"github.com/veandco/go-sdl2/sdl"
+	"manveer/exp/components/common"
+)
 
 type keyboardMover struct {
-	container *Actor
+	container *common.Actor
 	speed     float64
-	sr        *spriteRenderer
+	sr        *common.SpriteRenderer
 }
 
-func newKeyboardMover(container *Actor, speed float64) *keyboardMover {
+func newKeyboardMover(container *common.Actor, speed float64) *keyboardMover {
 	return &keyboardMover{
 		container: container,
 		speed:     speed,
-		sr:        container.getComponent(&spriteRenderer{}).(*spriteRenderer),
+		sr:        container.GetComponent(&common.SpriteRenderer{}).(*common.SpriteRenderer),
 	}
 }
 
-func (mover *keyboardMover) onUpdate() error {
+func (mover *keyboardMover) OnUpdate() error {
 	keys := sdl.GetKeyboardState()
 	container := mover.container
 	if keys[sdl.SCANCODE_LEFT] == 1 {
-		if container.position.X > 0 {
-			container.position.X -= mover.speed * Delta
+		if container.Position.X > 0 {
+			container.Position.X -= mover.speed * common.Delta
 		}
 	} else if keys[sdl.SCANCODE_RIGHT] == 1 {
-		if container.position.X < Configs.ScreenWidth {
-			container.position.X += mover.speed * Delta
+		if container.Position.X < Configs.ScreenWidth {
+			container.Position.X += mover.speed * common.Delta
 		}
 	}
 	if keys[sdl.SCANCODE_A] == 1 {
-		if container.angle > -45 {
-			container.angle -= Configs.PlayerRotationSpeed * Delta
+		if container.Angle > -45 {
+			container.Angle -= Configs.PlayerRotationSpeed * common.Delta
 		}
 	} else if keys[sdl.SCANCODE_D] == 1 {
-		if container.angle < 45 {
-			container.angle += Configs.PlayerRotationSpeed * Delta
+		if container.Angle < 45 {
+			container.Angle += Configs.PlayerRotationSpeed * common.Delta
 		}
 	}
 
 	return nil
 }
 
-func (mover *keyboardMover) onDraw(renderer *sdl.Renderer) error {
+func (mover *keyboardMover) OnDraw(renderer *sdl.Renderer) error {
 	return nil
 }
 
-func (mover *keyboardMover) onCollision(other *Actor) error {
+func (mover *keyboardMover) OnCollision(other *common.Actor) error {
 	return nil
 }

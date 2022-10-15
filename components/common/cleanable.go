@@ -1,4 +1,4 @@
-package shooter
+package common
 
 type Cleanable interface {
 	Clean()

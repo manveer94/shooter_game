@@ -3,47 +3,48 @@ package shooter
 import (
 	"fmt"
 	"github.com/veandco/go-sdl2/sdl"
+	"manveer/exp/components/common"
 )
 
 type BasicEnemy struct {
-	Actor
+	common.Actor
 }
 
-func NewBasicEnemy(renderer *sdl.Renderer, position Vector) *Actor {
-	e := &Actor{}
-	e.angle = 180
-	e.position = position
-	e.drawWidth = Configs.BasicEnemySize
-	e.drawHeight = Configs.BasicEnemySize
-	//sr := newSpriteRenderer(e, renderer, "sprites/enemy.bmp")
-	//e.addComponent(sr)
+func NewBasicEnemy(renderer *sdl.Renderer, position common.Vector) *common.Actor {
+	e := &common.Actor{}
+	e.Angle = 180
+	e.Position = position
+	e.DrawWidth = Configs.BasicEnemySize
+	e.DrawHeight = Configs.BasicEnemySize
+	//sr := NewSpriteRenderer(e, renderer, "sprites/enemy.bmp")
+	//e.AddComponent(sr)
 
-	idleSequence, err := newSequence("sprites/basic_enemy/idle", 3, true, renderer)
+	idleSequence, err := common.NewSequence("sprites/basic_enemy/idle", 3, true, renderer)
 	if err != nil {
-		panic(fmt.Errorf("creating idle sequence: %v", err))
+		panic(fmt.Errorf("creating idle Sequence: %v", err))
 	}
 
-	destroySequence, err := newSequence("sprites/basic_enemy/destroy", 25, false, renderer)
+	destroySequence, err := common.NewSequence("sprites/basic_enemy/destroy", 25, false, renderer)
 	if err != nil {
-		panic(fmt.Errorf("creating destroy sequence: %v", err))
+		panic(fmt.Errorf("creating destroy Sequence: %v", err))
 	}
 
-	sequences := map[string]*sequence{
+	sequences := map[string]*common.Sequence{
 		"idle":    idleSequence,
 		"destroy": destroySequence,
 	}
 
-	animator := newAnimator(e, sequences, "idle")
+	animator := common.NewAnimator(e, sequences, "idle")
 
-	e.addComponent(animator)
+	e.AddComponent(animator)
 
-	e.addComponent(newSimpleRotation(e, 0.5))
+	e.AddComponent(common.NewSimpleRotation(e, 0.5))
 
-	e.addComponent(newVulnerableToBullets(e))
+	e.AddComponent(newVulnerableToBullets(e))
 
-	e.collisions = append(e.collisions, circle{
-		radius: Configs.BasicEnemySize / 2,
-		center: position,
+	e.Collisions = append(e.Collisions, common.Circle{
+		Radius: Configs.BasicEnemySize / 2,
+		Center: position,
 	})
 	return e
 }

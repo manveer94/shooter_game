@@ -19,12 +19,11 @@ type GameConfig struct {
 	BulletSpeed  float64
 }
 
-var Delta float64
+//var Delta float64
 
 var Configs = GameConfig{
-	ScreenHeight:         960,
-	ScreenWidth:          720,
-	TargetTicksPerSecond: 60,
+	ScreenHeight: 960,
+	ScreenWidth:  720,
 
 	PlayerBaseSpeed:     5,
 	PlayerSize:          150,

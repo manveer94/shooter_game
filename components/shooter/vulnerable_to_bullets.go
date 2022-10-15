@@ -1,35 +1,38 @@
 package shooter
 
-import "github.com/veandco/go-sdl2/sdl"
+import (
+	"github.com/veandco/go-sdl2/sdl"
+	"manveer/exp/components/common"
+)
 
 type vulnerableToBullets struct {
-	container *Actor
-	animator  *animator
+	container *common.Actor
+	animator  *common.Animator
 }
 
-func newVulnerableToBullets(container *Actor) *vulnerableToBullets {
+func newVulnerableToBullets(container *common.Actor) *vulnerableToBullets {
 	return &vulnerableToBullets{
 		container: container,
-		animator:  container.getComponent(&animator{}).(*animator),
+		animator:  container.GetComponent(&common.Animator{}).(*common.Animator),
 	}
 }
 
-func (v *vulnerableToBullets) onDraw(renderer *sdl.Renderer) error {
+func (v *vulnerableToBullets) OnDraw(renderer *sdl.Renderer) error {
 	return nil
 }
 
-func (v *vulnerableToBullets) onUpdate() error {
-	if v.animator.finished && v.animator.current == "destroy" {
+func (v *vulnerableToBullets) OnUpdate() error {
+	if v.animator.Finished && v.animator.Current == "destroy" {
 		v.container.Active = false
 	}
 	return nil
 }
 
-func (v *vulnerableToBullets) onCollision(other *Actor) error {
-	if other.tag == "bullet" {
-		//v.container.Active = false
-		v.animator.setSequence("destroy")
-		//v.animator.
+func (v *vulnerableToBullets) OnCollision(other *common.Actor) error {
+	if other.Tag == "bullet" {
+		//v.Container.Active = false
+		v.animator.SetSequence("destroy")
+		//v.Animator.
 	}
 	return nil
 }
