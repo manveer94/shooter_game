@@ -11,14 +11,18 @@ type Level struct {
 	Name          string
 	window        *sdl.Window
 	renderer      *sdl.Renderer
-	onStart       func(*sdl.Renderer)
-	onFrameChange func(*sdl.Renderer)
+	onStart       func(*sdl.Renderer) error
+	onFrameChange func(*sdl.Renderer) error
 	onStop        func() error
 }
 
 func (lv Level) Start() {
 	log.Printf("initializing %s level\n", lv.Name)
-	lv.onStart(lv.renderer)
+	err := lv.onStart(lv.renderer)
+	if err != nil {
+		log.Printf("error occurred while initializing level: %v", err)
+		return
+	}
 	log.Printf("starting %s level\n", lv.Name)
 	for {
 		frameStartTime := time.Now()
@@ -36,7 +40,11 @@ func (lv Level) Start() {
 				return
 			}
 		}
-		lv.onFrameChange(lv.renderer)
+		err := lv.onFrameChange(lv.renderer)
+		if err != nil {
+			log.Printf("fatal error occured exiting game: %v", err)
+			return
+		}
 		shooter.Delta = time.Since(frameStartTime).Seconds() * shooter.Configs.TargetTicksPerSecond
 	}
 
