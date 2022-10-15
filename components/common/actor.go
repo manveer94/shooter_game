@@ -47,7 +47,7 @@ func (a *Actor) Update() error {
 	return nil
 }
 
-func (a Actor) Collision(other *Actor) error {
+func (a *Actor) Collision(other *Actor) error {
 	for _, comp := range a.components {
 		err := comp.OnCollision(other)
 		if err != nil {
