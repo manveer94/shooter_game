@@ -16,6 +16,7 @@ type Level struct {
 	renderer     *sdl.Renderer
 	onStart      func(*sdl.Renderer) error
 	onStop       func() error
+	beforeFrame  func() error
 }
 
 func (lv *Level) Start() {
@@ -66,6 +67,13 @@ func (lv *Level) run() {
 				return
 			}
 		}
+		if lv.beforeFrame != nil {
+			err = lv.beforeFrame()
+			if err != nil {
+				log.Printf("fatal error in before frame hook: %v", err)
+				return
+			}
+		}
 		err := lv.frameChange()
 		if err != nil {
 			log.Printf("fatal error occured exiting game: %v", err)
@@ -97,6 +105,7 @@ func (lv *Level) frameChange() error {
 		return fmt.Errorf("checking collisions:%v \n", err)
 	}
 	lv.renderer.Present()
+	common.ExecuteRemoveActor()
 	return nil
 }
 

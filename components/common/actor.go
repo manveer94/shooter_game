@@ -6,10 +6,6 @@ import (
 	"reflect"
 )
 
-type Vector struct {
-	X, Y float64
-}
-
 type Component interface {
 	OnUpdate() error
 	OnDraw(renderer *sdl.Renderer) error
@@ -80,4 +76,17 @@ func (a *Actor) GetComponent(withType Component) Component {
 		reflect.TypeOf(withType)))
 }
 
+func RemoveActor(index int32) {
+	actorRemovalQueue = append(actorRemovalQueue, index)
+}
+
+func ExecuteRemoveActor() {
+	for _, index := range actorRemovalQueue {
+		Actors[index] = Actors[len(Actors)-1]
+		Actors = Actors[:len(Actors)-1]
+	}
+	actorRemovalQueue = []int32{}
+}
+
+var actorRemovalQueue []int32
 var Actors []*Actor

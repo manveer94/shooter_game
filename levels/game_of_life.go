@@ -10,5 +10,6 @@ func CreateGameOfLife() *Level {
 	level.onStart = gol.Initialize
 	level.windowWidth = 1000
 	level.windowHeight = 1000
+	level.beforeFrame = gol.UpdateMatrix
 	return level
 }
